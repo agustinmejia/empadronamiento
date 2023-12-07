@@ -148,5 +148,17 @@ if (\Illuminate\Support\Str::startsWith(Auth::user()->avatar, 'http://') || \Ill
     @foreach(config('voyager.additional_js') as $js)<script type="text/javascript" src="{{ asset($js) }}"></script>@endforeach
 @endif
 
+<link rel="stylesheet" href="{{ asset('vendor/loading/loading.css') }}">
+<script src="{{ asset('vendor/loading/loading.js') }}"></script>
+
+<script>
+    $(document).ready(function() {
+        $('[data-toggle="tooltip"]').tooltip();
+        $('[data-toggle="popover"]').popover();
+        $('.form-submit').submit(function(){
+            $('.form-submit .btn-submit').attr('disabled', 'disabled');
+        });
+    });
+</script>
 </body>
 </html>

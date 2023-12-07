@@ -172,6 +172,13 @@
                                                         {{ date('d/m/Y H:i', strtotime($data->{$row->field})) }} <br>
                                                         <small>{{ \Carbon\Carbon::parse($data->{$row->field})->diffForHumans() }}</small>
                                                     @endif
+                                                @elseif(($row->type == 'user_id'))
+                                                   @php
+                                                        $user = \App\Models\User::find($data->{$row->field});
+                                                   @endphp
+
+                                                {{ $user ? $user->name : '' }}
+                                                
                                                 @elseif($row->type == 'checkbox')
                                                     @if(property_exists($row->details, 'on') && property_exists($row->details, 'off'))
                                                         @if($data->{$row->field})

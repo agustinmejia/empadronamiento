@@ -2,6 +2,10 @@
 
 use Illuminate\Support\Facades\Route;
 
+// Controllers
+use App\Http\Controllers\PeopleController;
+use App\Http\Controllers\ReportsController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,6 +28,28 @@ Route::get('/', function () {
 
 Route::group(['prefix' => 'admin'], function () {
     Voyager::routes();
+    Route::get('people/list/ajax', [PeopleController::class, 'list'])->name('people.list');
+
+    Route::get('people/{id}/credential', function ($id) {
+        $person = App\Models\Person::find($id);
+        return view('vendor.voyager.people.credential', compact('person'));
+    })->name('people.credential');
+    
+    Route::get('people/{id}/credential/download', function ($id) {
+        $response = Http::get('https://image-from-url.ideacreativa.dev/generate?url='.route('people.credential', $id));
+        if($response->ok()){
+            $res = json_decode($response->body());
+            $filename = 'credencial.png';
+            $tempImage = tempnam(sys_get_temp_dir(), $filename);
+            copy($res->url, $tempImage);
+            return response()->download($tempImage, $filename);
+        }else{
+            return "Error";
+        }
+    })->name('people.credential.download');
+
+    Route::get('reports/people', [ReportsController::class, 'people_browse'])->name('reports.people');
+    Route::post('reports/people/generate', [ReportsController::class, 'people_list'])->name('reports.people.generate');
 });
 
 // Clear cache
